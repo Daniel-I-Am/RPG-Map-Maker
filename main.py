@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import Image, ImageTk, ImageGrab
 import math
 import os
+from time import localtime
 
 print("Please specify amount of tiles:")
 xTiles = int(input("x: "))
@@ -13,6 +14,7 @@ yMinTiles = 8
 minScale = 64
 
 root = Tk()
+root.title("RPG Map Maker")
 
 no_gc = {'images': [[0 for x in range(yTiles)] for y in range(xTiles)] }
 image = None
@@ -50,12 +52,13 @@ def _select(event):
 	image = image_index[yTile*xMinTiles + xTile]
 
 def _save(event):
-	print('saving')
+	print('saving screenshot')
 	x=root.winfo_rootx()+canvas.winfo_x()
 	y=root.winfo_rooty()+canvas.winfo_y()
 	x1=x+canvas.winfo_width()
 	y1=y+canvas.winfo_height()
-	ImageGrab.grab().crop((x,y,x1,y1)).save("fph.png")
+	t = localtime()
+	ImageGrab.grab().crop((x,y,x1,y1)).save("screenshot-{}-{}-{}-{}-{}-{}.png".format(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec))
 
 def _scroll(event):
 	global offset
@@ -65,7 +68,6 @@ def _scroll(event):
 	else:
 		#scroll down
 		offset = min(maxOffset, offset+1)
-	print("offset: {}".format(offset))
 	draw_prev()
 
 canvas = Canvas(root, width=xTiles*scale, height=yTiles*scale)
